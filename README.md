@@ -24,4 +24,4 @@ A full-stack MERN-based Job Portal designed to streamline the interaction betwee
 **📊 Analytics Dashboard **– Gain insights into job performance and applicant data.
 
 **🛠️ Tech Stack:
-MongoDB | Express.js | React.js | Node.js | Tailwind CSS | JWT Authentication**
+MongoDB | Express.js | React.js | Node.js | CSS | JWT Authentication**
