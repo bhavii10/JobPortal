@@ -1,27 +1,27 @@
-🚀 Job Portal Application
+**🚀 Job Portal Application**
 
 A full-stack MERN-based Job Portal designed to streamline the interaction between Job Seekers and Recruiters.
-🌐 Live Demo: Job Portal Application
 
-👩‍💻 For Job Seekers:
 
-🧾 Resume Builder – Create and customize professional resumes.
+**👩‍💻 For Job Seekers:**
 
-🔍 Find Jobs – Browse and search for jobs using advanced filters.
+**🧾 Resume Builde**r – Create and customize professional resumes.
 
-💼 Apply for Jobs – Submit applications directly through the platform.
+**🔍 Find Jobs** – Browse and search for jobs using advanced filters.
 
-🧠 Interview Preparation – Practice DSA, Aptitude, and Behavioral questions.
+**💼 Apply for Jobs** – Submit applications directly through the platform.
 
-🔔 Notifications – Get real-time updates on job applications and interviews.
+**🧠 Interview Preparation** – Practice DSA, Aptitude, and Behavioral questions.
 
-🏢 For Recruiters:
+**🔔 Notifications** – Get real-time updates on job applications and interviews.
 
-📢 Post Jobs – Create and manage job listings easily.
+**🏢 For Recruiters:**
 
-👥 Manage Applicants – View, filter, and track candidate applications.
+**📢 Post Jobs** – Create and manage job listings easily.
 
-📊 Analytics Dashboard – Gain insights into job performance and applicant data.
+**👥 Manage Applicants** – View, filter, and track candidate applications.
 
-🛠️ Tech Stack:
-MongoDB | Express.js | React.js | Node.js | Tailwind CSS | JWT Authentication
+**📊 Analytics Dashboard **– Gain insights into job performance and applicant data.
+
+**🛠️ Tech Stack:
+MongoDB | Express.js | React.js | Node.js | Tailwind CSS | JWT Authentication**
