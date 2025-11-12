@@ -1,4 +1,5 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
+import axios from "axios";
 import {
   BarChart,
   Bar,
@@ -14,27 +15,42 @@ import { FaBriefcase, FaUserFriends, FaCheckCircle, FaTimesCircle } from "react-
 import "./Analytics.css";
 
 export default function Analytics() {
-  // Example data (replace with API fetch)
-  const jobsData = [
-    { name: "Frontend Dev", applicants: 45 },
-    { name: "Backend Dev", applicants: 30 },
-    { name: "MERN Stack", applicants: 60 },
-    { name: "UI/UX", applicants: 20 },
-  ];
+  const [analytics, setAnalytics] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
 
-  const statusData = [
-    { name: "Accepted", value: 50 },
-    { name: "Rejected", value: 30 },
-    { name: "Pending", value: 40 },
-  ];
+  useEffect(() => {
+    const fetchAnalytics = async () => {
+      try {
+        const res = await axios.get("http://localhost:5000/api/analytics");
+        setAnalytics(res.data);
+      } catch (err) {
+        console.error("❌ Error fetching analytics:", err);
+        setError("Failed to load analytics data.");
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchAnalytics();
+  }, []);
+
+  if (loading) return <div className="analytics-container">Loading analytics...</div>;
+  if (error) return <div className="analytics-container">{error}</div>;
+  if (!analytics) return null;
 
   const COLORS = ["#16a34a", "#ff3d3d", "#6b21a8"];
+  const statusData = [
+    { name: "Accepted", value: analytics.accepted },
+    { name: "Rejected", value: analytics.rejected },
+    { name: "Pending", value: analytics.pending },
+  ];
 
   const summaryStats = [
-    { title: "Total Jobs", value: 12, icon: <FaBriefcase /> },
-    { title: "Total Applicants", value: 120, icon: <FaUserFriends /> },
-    { title: "Accepted", value: 50, icon: <FaCheckCircle /> },
-    { title: "Rejected", value: 30, icon: <FaTimesCircle /> },
+    { title: "Total Jobs", value: analytics.totalJobs, icon: <FaBriefcase /> },
+    { title: "Total Applicants", value: analytics.totalApplicants, icon: <FaUserFriends /> },
+    { title: "Accepted", value: analytics.accepted, icon: <FaCheckCircle /> },
+    { title: "Rejected", value: analytics.rejected, icon: <FaTimesCircle /> },
   ];
 
   return (
@@ -59,7 +75,7 @@ export default function Analytics() {
         <div className="chart-box">
           <h3>Total Applicants per Job</h3>
           <ResponsiveContainer width="100%" height={300}>
-            <BarChart data={jobsData} margin={{ top: 20, right: 30, left: 0, bottom: 5 }}>
+            <BarChart data={analytics.applicantsPerJob}>
               <XAxis dataKey="name" />
               <YAxis />
               <Tooltip />

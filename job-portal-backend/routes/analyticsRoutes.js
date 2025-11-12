@@ -1,49 +1,41 @@
+// routes/analytics.js
 const express = require("express");
-const router = express.Router();
 const Job = require("../models/Job");
 const Application = require("../models/Application");
-const User = require("../models/User");
 
-// GET /api/employer/analytics/:employerId
-router.get("/:employerId", async (req, res) => {
+const router = express.Router();
+
+router.get("/", async (req, res) => {
   try {
-    const employer = await User.findById(req.params.employerId);
-
-    if (!employer) return res.status(404).json({ msg: "Employer not found" });
-
-    if (employer.role !== "employer") {
-      return res.status(403).json({ msg: "Access denied: only employers allowed" });
-    }
-
-    const jobs = await Job.find({ employerId: req.params.employerId });
+    // Get all jobs
+    const jobs = await Job.find();
     const totalJobs = jobs.length;
 
-    const applications = await Application.find({ jobId: { $in: jobs.map(j => j._id) } });
-    const totalApplications = applications.length;
+    // Get all applications
+    const applications = await Application.find();
 
+    const totalApplicants = applications.length;
     const accepted = applications.filter(a => a.status === "accepted").length;
     const rejected = applications.filter(a => a.status === "rejected").length;
-    const pending = applications.filter(a => a.status === "pending").length;
-    const inProgress = applications.filter(a => a.status === "in-progress").length;
+    const pending = applications.filter(a => !a.status || a.status === "pending").length;
 
-    // Applications per job
-    const applicationsPerJob = jobs.map(job => ({
-      title: job.title,
-      count: applications.filter(a => a.jobId.toString() === job._id.toString()).length,
+    // Group applicants by job
+    const applicantsPerJob = jobs.map(job => ({
+      name: job.title,
+      applicants: applications.filter(a => a.jobId?.toString() === job._id.toString()).length
     }));
 
     res.json({
       totalJobs,
-      totalApplications,
+      totalApplicants,
       accepted,
       rejected,
       pending,
-      inProgress,
-      applicationsPerJob,
+      applicantsPerJob
     });
   } catch (err) {
-    console.error("Analytics error:", err);
-    res.status(500).json({ msg: "Server error", error: err.message });
+    console.error("🔥 Analytics fetch error:", err);
+    res.status(500).json({ error: "Failed to load analytics" });
   }
 });
 
