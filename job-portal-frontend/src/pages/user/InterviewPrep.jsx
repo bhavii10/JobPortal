@@ -49,36 +49,32 @@
 
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import {
-  Brain,
-  Target,
-  Cpu,
-  Users,
-} from "lucide-react"; // for icons
+import { Brain, Target, Cpu, Users } from "lucide-react";
 import "./InterviewPrep.css";
 
 const InterviewPrep = () => {
   const navigate = useNavigate();
   const [category, setCategory] = useState("DSA");
 
-
   const handleStartPractice = () => {
-    const token = localStorage.getItem("token");
+    const storedUser = localStorage.getItem("user");
 
-    if (token) {
-      navigate("/interview-practice", { state: { category } });
+    // ✅ SAME AUTH LOGIC AS REST OF APP
+    if (storedUser) {
+      navigate("/interview-practice", {
+        state: { category },
+      });
     } else {
-      navigate("/login");
+      navigate("/"); // landing → login from navbar
     }
   };
 
   const categories = [
-  { name: "DSA", icon: <Brain size={22} /> },
-  { name: "Aptitude", icon: <Target size={22} /> },
-  { name: "System Design", icon: <Cpu size={22} /> },
-  { name: "Behavioral", icon: <Users size={22} /> },
-];
-
+    { name: "DSA", icon: <Brain size={22} /> },
+    { name: "Aptitude", icon: <Target size={22} /> },
+    { name: "System Design", icon: <Cpu size={22} /> },
+    { name: "Behavioral", icon: <Users size={22} /> },
+  ];
 
   return (
     <div className="prep-container">
@@ -86,7 +82,9 @@ const InterviewPrep = () => {
         <div className="prep-icon">
           <Brain size={36} />
         </div>
+
         <h1 className="prep-title">Choose Your Practice Category</h1>
+
         <p className="prep-subtitle">
           Select a category and start practicing tailored MCQs with{" "}
           <span className="brand">JobPortal</span>
@@ -135,4 +133,3 @@ const InterviewPrep = () => {
 };
 
 export default InterviewPrep;
-

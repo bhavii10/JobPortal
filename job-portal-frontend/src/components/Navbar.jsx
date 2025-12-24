@@ -158,6 +158,7 @@
 
 
 import React, { useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
 import "./Navbar.css";
 
@@ -166,45 +167,65 @@ export default function Navbar({ user, setUser, role = "user" }) {
   const [isLogin, setIsLogin] = useState(true);
   const [form, setForm] = useState({ name: "", email: "", password: "" });
 
+  const navigate = useNavigate();
+
   const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });
   };
 
+  // 🔐 LOGIN / SIGNUP
   const handleAuthSubmit = async (e) => {
     e.preventDefault();
+
     try {
       if (isLogin) {
+        // ✅ LOGIN (NO ROLE SENT)
         const res = await axios.post(
           "http://localhost:5000/api/auth/login",
-          { email: form.email, password: form.password, role },
+          {
+            email: form.email,
+            password: form.password,
+          },
           { withCredentials: true }
         );
 
-        const user = res.data.user;
-        if (user) {
-          localStorage.setItem("user", JSON.stringify(user));
-          localStorage.setItem("userId", user._id);
-          localStorage.setItem("email", user.email);
-          localStorage.setItem("role", user.role);
-          setUser(user);
+        const loggedUser = res.data.user;
+
+        // ✅ STORE USER
+        localStorage.setItem("user", JSON.stringify(loggedUser));
+        localStorage.setItem("userId", loggedUser._id);
+        localStorage.setItem("email", loggedUser.email);
+        localStorage.setItem("role", loggedUser.role);
+
+        setUser(loggedUser);
+
+        // ✅ ROLE BASED REDIRECT
+        if (loggedUser.role === "user") {
+          navigate("/user");
+        } else {
+          navigate("/employer"); // employer + recruiter
         }
       } else {
+        // ✅ SIGNUP (ROLE REQUIRED)
         await axios.post(
           "http://localhost:5000/api/auth/signup",
           { ...form, role },
           { withCredentials: true }
         );
+
         alert("Signup successful! Please login.");
         setIsLogin(true);
       }
+
       setForm({ name: "", email: "", password: "" });
       setShowAuth(false);
     } catch (err) {
       console.error("Auth error:", err);
-      alert(err.response?.data?.msg || "Error occurred");
+      alert(err.response?.data?.msg || "Authentication failed");
     }
   };
 
+  // 🚪 LOGOUT
   const handleLogout = async () => {
     try {
       await axios.post(
@@ -212,29 +233,41 @@ export default function Navbar({ user, setUser, role = "user" }) {
         {},
         { withCredentials: true }
       );
-      setUser(null);
-    } catch {
-      alert("Logout failed");
+    } catch (err) {
+      console.error("Logout error:", err);
     }
+
+    // ✅ CLEAR EVERYTHING
+    localStorage.clear();
+    setUser(null);
+    navigate("/");
   };
 
-  const capitalize = (str) => (str ? str.charAt(0).toUpperCase() + str.slice(1) : "User");
+  const capitalize = (str) =>
+    str ? str.charAt(0).toUpperCase() + str.slice(1) : "User";
 
   return (
     <>
       <nav className="navbar">
         <div className="logo">JobPortal</div>
+
+        {/* ✅ NO <a href="/"> */}
         <ul className="nav-links">
-          <li><a href="/">Home</a></li>
+          <li><Link to="/">Home</Link></li>
           <li><a href="#features">Features</a></li>
           <li><a href="#reviews">Reviews</a></li>
           <li><a href="#footer">Contact</a></li>
         </ul>
+
         <div className="auth-section">
           {user ? (
             <>
-              <div className="avatar">{user?.name ? user.name[0].toUpperCase() : "U"}</div>
-              <button className="btn-logout" onClick={handleLogout}>Logout</button>
+              <div className="avatar">
+                {user.name ? user.name[0].toUpperCase() : "U"}
+              </div>
+              <button className="btn-logout" onClick={handleLogout}>
+                Logout
+              </button>
             </>
           ) : (
             <>
@@ -247,6 +280,7 @@ export default function Navbar({ user, setUser, role = "user" }) {
               >
                 Login as {capitalize(role)}
               </button>
+
               <button
                 className="btn-login"
                 onClick={() => {
@@ -261,11 +295,17 @@ export default function Navbar({ user, setUser, role = "user" }) {
         </div>
       </nav>
 
+      {/* AUTH MODAL */}
       {showAuth && (
         <div className="auth-modal">
           <div className="auth-modal-content">
-            <span className="close" onClick={() => setShowAuth(false)}>&times;</span>
-            <h2>{isLogin ? "Login" : "Signup"} as {capitalize(role)}</h2>
+            <span className="close" onClick={() => setShowAuth(false)}>
+              &times;
+            </span>
+
+            <h2>
+              {isLogin ? "Login" : "Signup"} as {capitalize(role)}
+            </h2>
 
             <form onSubmit={handleAuthSubmit}>
               {!isLogin && (
@@ -278,6 +318,7 @@ export default function Navbar({ user, setUser, role = "user" }) {
                   required
                 />
               )}
+
               <input
                 type="email"
                 name="email"
@@ -286,6 +327,7 @@ export default function Navbar({ user, setUser, role = "user" }) {
                 onChange={handleChange}
                 required
               />
+
               <input
                 type="password"
                 name="password"
@@ -294,7 +336,10 @@ export default function Navbar({ user, setUser, role = "user" }) {
                 onChange={handleChange}
                 required
               />
-              <button type="submit">{isLogin ? "Login" : "Signup"}</button>
+
+              <button type="submit">
+                {isLogin ? "Login" : "Signup"}
+              </button>
             </form>
 
             <p
@@ -302,7 +347,9 @@ export default function Navbar({ user, setUser, role = "user" }) {
               onClick={() => setIsLogin(!isLogin)}
               style={{ cursor: "pointer", color: "blue", marginTop: "10px" }}
             >
-              {isLogin ? "Don't have an account? Signup" : "Already have an account? Login"}
+              {isLogin
+                ? "Don't have an account? Signup"
+                : "Already have an account? Login"}
             </p>
           </div>
         </div>

@@ -11,7 +11,8 @@ export default function RecruiterPage({ user, setUser }) {
   return (
     <div>
       {/* Pass role="recruiter" to Navbar */}
-      <Navbar user={user} setUser={setUser} role="recruiter" />
+      <Navbar user={user} setUser={setUser} role="employer" />
+
 
       {/* Hero Section */}
       <section className="hero-section">

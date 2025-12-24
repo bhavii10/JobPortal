@@ -1,15 +1,25 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
-import { Briefcase, UserCircle, Sparkles, TrendingUp, Users, Target } from "lucide-react";
+import {
+  Briefcase,
+  UserCircle,
+  Sparkles,
+  TrendingUp,
+  Users,
+  Target,
+} from "lucide-react";
 import "./LandingPage.css";
 
-export default function LandingPage({ setRole }) {
+export default function LandingPage() {
   const navigate = useNavigate();
 
   const handleEnter = (selectedRole) => {
-    setRole(selectedRole);
-    if (selectedRole === "user") navigate("/user");
-    else if (selectedRole === "employer") navigate("/employer");
+    if (selectedRole === "user") {
+      navigate("/user");
+    } else {
+      // employer + recruiter
+      navigate("/employer");
+    }
   };
 
   return (
@@ -22,8 +32,6 @@ export default function LandingPage({ setRole }) {
       </div>
 
       <div className="content">
-      
-
         <h1 className="main-title">
           <span>Welcome to</span>
           <span className="highlight">Job Portal</span>
@@ -34,7 +42,7 @@ export default function LandingPage({ setRole }) {
         </p>
 
         <div className="cards-container">
-          {/* User Card */}
+          {/* Job Seeker Card */}
           <div className="role-card role-user">
             <div className="card-header">
               <div className="icon-box user-gradient">
@@ -42,18 +50,33 @@ export default function LandingPage({ setRole }) {
               </div>
               <h2>Job Seeker</h2>
             </div>
-            <p>Discover thousands of opportunities from top companies and build your career</p>
+
+            <p>
+              Discover thousands of opportunities from top companies and build
+              your career
+            </p>
+
             <ul className="features-list">
-              <li><Target className="icon-sm" /> Browse thousands of jobs</li>
-              <li><TrendingUp className="icon-sm" /> Track your applications</li>
-              <li><Sparkles className="icon-sm" /> Get matched instantly</li>
+              <li>
+                <Target className="icon-sm" /> Browse thousands of jobs
+              </li>
+              <li>
+                <TrendingUp className="icon-sm" /> Track your applications
+              </li>
+              <li>
+                <Sparkles className="icon-sm" /> Get matched instantly
+              </li>
             </ul>
-            <button className="enter-btn user-gradient" onClick={() => handleEnter("user")}>
+
+            <button
+              className="enter-btn user-gradient"
+              onClick={() => handleEnter("user")}
+            >
               Enter as Job Seeker
             </button>
           </div>
 
-          {/* Employer Card */}
+          {/* Employer / Recruiter Card */}
           <div className="role-card role-employer">
             <div className="card-header">
               <div className="icon-box employer-gradient">
@@ -61,13 +84,27 @@ export default function LandingPage({ setRole }) {
               </div>
               <h2>Recruiter</h2>
             </div>
-            <p>Connect with talented professionals and build your dream team</p>
+
+            <p>
+              Connect with talented professionals and build your dream team
+            </p>
+
             <ul className="features-list">
-              <li><Users className="icon-sm" /> Access top talent pool</li>
-              <li><TrendingUp className="icon-sm" /> Manage applications</li>
-              <li><Sparkles className="icon-sm" /> Smart candidate matching</li>
+              <li>
+                <Users className="icon-sm" /> Access top talent pool
+              </li>
+              <li>
+                <TrendingUp className="icon-sm" /> Manage applications
+              </li>
+              <li>
+                <Sparkles className="icon-sm" /> Smart candidate matching
+              </li>
             </ul>
-            <button className="enter-btn employer-gradient" onClick={() => handleEnter("employer")}>
+
+            <button
+              className="enter-btn employer-gradient"
+              onClick={() => handleEnter("employer")}
+            >
               Enter as Employer
             </button>
           </div>
